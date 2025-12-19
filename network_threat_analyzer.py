@@ -3,7 +3,9 @@ import ipaddress
 import pandas as pd
 
 external_ips = set()  # Keep this for VirusTotal checking
-connection_details = []  # NEW: Store full connection info
+connection_details = [] 
+# NEW: Store full connection infoconnections = psutil.net_connections(kind='all')
+connections = psutil.net_connections(kind='all')
 
 for conn in connections:
     if conn.status == 'ESTABLISHED' and conn.raddr:
@@ -34,7 +36,7 @@ import requests
 import time
 
 # Your API key (keep this secret!)
-API_KEY = ''
+API_KEY = '5c3e9c0e0ff62774d75ac29a5da2617b87f458b1cf2c75d8fd5a85c0cf5fdbda'
 
 
     
@@ -91,7 +93,6 @@ df_vt = pd.DataFrame(vt_results)
 # Merge them on IP address
 df_final = df_connections.merge(df_vt, left_on='remote_ip', right_on='IP', how='left')
 
-print(df_final)
 
 print("\n" + "="*80)
 print("VIRUSTOTAL ANALYSIS REPORT")
@@ -99,7 +100,7 @@ print("="*80)
 print(df_final.to_string(index=False))
 
 # Step 4: Flag suspicious IPs
-suspicious = df_final[(df['Malicious'] > 0) | (df_final['Suspicious'] > 0)]
+suspicious = df_final[(df_final['Malicious'] > 0) | (df_final['Suspicious'] > 0)]
 
 if len(suspicious) > 0:
     print("\n" + "="*80)
@@ -113,3 +114,4 @@ else:
 df_final.to_csv('network_threat_analysis.csv', index=False)
 df_final.to_excel('network_threat_analysis.xlsx', index=False)
 print(f"\n✓ Results saved to network_threat_analysis.csv and .xlsx")
+    
